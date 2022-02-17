@@ -4,6 +4,32 @@ from tssearch.search.search_utils import lockstep_search, elastic_search, start_
 
 
 def time_series_search(dict_distances, query, sequence, tq=None, ts=None, weight=None, output=("number", 1)):
+    """
+    Time series search method locates the k-best occurrences of a given query on a more extended sequence based on a
+    distance measurement.
+
+    Parameters
+    ----------
+    dict_distances: dict
+        Configuration file with distances
+    query: nd-array
+        Time series query
+    sequence: nd-array
+        Time series sequence
+    tq: nd-array (Default: None)
+        Time instants of time series query
+    ts: nd-array (Default: None)
+        Time instants of time series sequence
+    weight: nd-array (Default: None)
+        query weight values
+    output: tuple
+        number of occurrences
+
+    Returns
+    -------
+    distance_results: dict
+        time instants, optimal alignment path and distance for each occurrence per distance
+    """
 
     l_query = len(query)
     distance_results = {}
@@ -25,7 +51,7 @@ def time_series_search(dict_distances, query, sequence, tq=None, ts=None, weight
                 elif d_type == "elastic":
                     distance, ac = elastic_search(dict_distances[d_type][dist], query, sequence, tq, ts, weight)
 
-                    if dist == 'Longest Common Subsequence':
+                    if dist == "Longest Common Subsequence":
                         eps = dict_distances[d_type][dist]["parameters"]["eps"]
                         if len(np.shape(query)) == 1:
                             query_copy = query.reshape(-1, 1)
@@ -33,7 +59,7 @@ def time_series_search(dict_distances, query, sequence, tq=None, ts=None, weight
                             path = [lcss_path(query_copy, sequence_copy, ac, eps)]
                         else:
                             path = [lcss_path(query, sequence, ac, eps)]
-                        distance_results[dist]["path_dist"] = [lcss_score(sim_mat=ac)]
+                        distance_results[dist]["path_dist"] = [lcss_score(ac)]
                         end_index = [path_i[1][-1] for path_i in path]
                     else:
                         end_index = start_sequences_index(distance, output=output, overlap=l_query / 2)
