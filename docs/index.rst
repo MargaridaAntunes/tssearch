@@ -22,6 +22,8 @@ In development
 
    Lockstep Distances <descriptions/lockstep_distances>
    Elastic Distances <descriptions/elastic_distances>
+   Segmentation and Search <descriptions/segmentation_search>
+   Module Reference <descriptions/modules>
    Authors <authors>
    Changelog <changelog>
    License <license>
@@ -29,7 +31,11 @@ In development
 Installation
 ============
 
-We’re planning to add TSSEARCH to PyPi soon. In the meantime, you can install TSSEARCH by cloning the GitHub repository and running the setup.py.
+This packages is available on PyPI:
+
+.. code:: bash
+
+    $ pip install tssearch
 
 Get started
 ===========
@@ -41,13 +47,13 @@ The code below segments a 10 s electrocardiography record:
     import tssearch
 
     # Load the query, (optional) weight vector and sequence
-    query, weights, sequence = tssearch.examples.get_ecg_example_data()
+    data = tssearch.load_ecg_example()
 
     # Selects the Dynamic Time Warping (DTW) as the distance for the segmentation
     cfg = tssearch.get_distance_dict(["Dynamic Time Warping"])
 
     # Performs the segmentation
-    out = tssearch.time_series_segment(cfg, query, sequence, weights)
+    out = tssearch.time_series_segmentation(cfg, data['query'], data['sequence'], data['weight'])
 
 Indices and tables
 ==================
